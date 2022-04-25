@@ -14,18 +14,17 @@ variable "ami_id" {
   description = "AMI ID for EC2 instances."
 }
 
-variable "key_name" {
-  description = "Key Name for EC2 Instance"
-}
-
 #------------------------------------------------------------------------------
 # AWS EC2 LAUNCH CONFIGURATION
 #------------------------------------------------------------------------------
 variable "image_id" {
   description = "The EC2 image ID to launch."
+  type        = string 	 
+  default =  "ami-03101b89b2b513118"
 }
 variable "instance_type" {
   description = "The size of instance to launch."
+  default     = "t2.micro"
 }
 variable "iam_instance_profile" {
   description = "(Optional) The name attribute of the IAM instance profile to associate with launched instances."
@@ -33,17 +32,17 @@ variable "iam_instance_profile" {
 }
 variable "key_name" {
   description = "(Optional) The key name that should be used for the instance."
-  default     = ""
+  default     = "kk-project"
 }
 variable "security_groups" {
   description = "(Optional) A list of associated security group IDS."
   type        = list(any)
   default     = []
 }
-variable "associate_public_ip_address" {
-  description = "(Optional) Associate a public ip address with an instance in a VPC."
-  type        = bool
-}
+#variable "associate_public_ip_address" {
+#  description = "(Optional) Associate a public ip address with an instance in a VPC."
+#  type        = bool
+#}
 variable "vpc_classic_link_id" {
   description = "(Optional) The ID of a ClassicLink-enabled VPC. Only applies to EC2-Classic instances. (eg. vpc-2730681a)"
   default     = ""
@@ -99,11 +98,13 @@ variable "placement_tenancy" {
 #------------------------------------------------------------------------------
 variable "max_size" {
   description = "The maximum size of the auto scale group."
-  type        = 4
+  type        = number
+  default     = 4
 }
 variable "min_size" {
   description = "The minimum size of the auto scale group. (See also Waiting for Capacity.)"
-  type        = 2
+  type        = number
+  default     = 2
 }
 variable "availability_zones" {
   description = "(Required only for EC2-Classic) A list of one or more availability zones for the group. This parameter should not be specified when using vpc_zone_identifier."

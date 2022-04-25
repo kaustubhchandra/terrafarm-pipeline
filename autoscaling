@@ -8,7 +8,7 @@ resource "aws_launch_configuration" "lc" {
   iam_instance_profile             = var.iam_instance_profile
   key_name                         = var.key_name
   security_groups                  = var.security_groups
-  associate_public_ip_address      = var.associate_public_ip_address
+ # associate_public_ip_address      = var.associate_public_ip_address
   vpc_classic_link_id              = var.vpc_classic_link_id
   vpc_classic_link_security_groups = var.vpc_classic_link_security_groups
   user_data                        = var.user_data
@@ -29,7 +29,7 @@ resource "aws_launch_configuration" "lc" {
 # Auto Scaling Group
 #------------------------------------------------------------------------------
 resource "aws_autoscaling_group" "asg" {
-  depends_on                = [aws_launch_configuration.lc]
+  depends_on                = "aws_launch_configuration.lc"
   name                      = "${var.name_prefix}_asg"
   max_size                  = var.max_size
   min_size                  = var.min_size
@@ -53,12 +53,12 @@ resource "aws_autoscaling_group" "asg" {
   wait_for_elb_capacity     = var.wait_for_elb_capacity
   protect_from_scale_in     = var.protect_from_scale_in
   service_linked_role_arn   = var.service_linked_role_arn
-  tags = [
+  tags = [ 
     {
       key                 = "Name"
       value               = "${var.name_prefix}_asg"
       propagate_at_launch = true
-    },
+    }
   ]
 }
   
@@ -73,4 +73,16 @@ resource "aws_autoscaling_policy" "cpu_high" {
   policy_type            = "SimpleScaling"
   scaling_adjustment     = "1"
   cooldown               = "300"
+}
+
+# Scaling DOWN - CPU Low
+resource "aws_autoscaling_policy" "cpu_low" {
+  name                   = "${var.name_prefix}-cpu-high"
+  autoscaling_group_name = aws_autoscaling_group.asg.name
+  adjustment_type        = "ChangeInCapacity"
+  policy_type            = "SimpleScaling"
+  scaling_adjustment     = "-1"
+  cooldown               = "300"
+}
+
 }
