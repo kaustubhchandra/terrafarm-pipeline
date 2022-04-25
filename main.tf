@@ -1,5 +1,5 @@
 resource "aws_security_group" "jenkins_security_group" {
-  name = "sg_jenkins"
+  name = "sg_jenkins-2"
   description = "jenkins security group."
   vpc_id = "${var.vpc_id}"
 }
